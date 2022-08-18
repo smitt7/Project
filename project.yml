@@ -1,0 +1,41 @@
+---
+- name: user module demo
+  hosts: all
+  become: true
+  vars:
+
+    USER: "example"
+
+  tasks:
+    - name: user example present
+      ansible.builtin.user:
+        name: example
+        password: "{{ 'password' | password_hash('sha512', 'mysecretsalt') }}"
+        groups:
+          - wheel
+          - adm
+        state: "present"
+        shell: "/bin/bash"
+        system: false
+        create_home: true
+        home: "/home/example"
+        comment: "Ansible example"
+        generate_ssh_key: true
+
+  tasks:
+
+  - name: Gather available local users
+    getent:
+      database: passwd
+
+  - name: Show gathered local user names only
+    debug:
+      msg: "{{ item }}"
+    loop: "{{ getent_passwd.keys() | list }}"
+    when: ansible_check_mode
+  tasks:
+  - name: Create a file
+    file: path=/home/ansible/niranjan.txt state=touch
+  tasks:
+  - name: moving to tmp
+    copy: src=/home/ansible/niranjan.txt dest=/tmp/niranjan.txt
